@@ -10,7 +10,7 @@ RUN echo "*** Updating OS ***" \
     && DEBIAN_FRONTEND=noninteractive apt-get -q update \
     && echo "*** Installing ddclient and certificates ***" \
     && DEBIAN_FRONTEND=noninteractive apt-get -qy install ddclient \
-        ca-certificates python3 \
+        ca-certificates python3 git \
     && rm -rf /var/lib/apt/lists/*
 
-# ENTRYPOINT []
+ENTRYPOINT [python3, PairDomainsDDClientDocker]
