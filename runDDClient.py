@@ -1,5 +1,5 @@
 import argparse
-from os import path, system
+from os import path, system, chmod
 import sys
 
 EXECUTABLE = "ddclient"
@@ -47,9 +47,11 @@ def writeFile(use, server, login, password, dns, output):
         file.write("login={}\n".format(login));
         file.write("password={}\n".format(password));
         file.write("{}\n".format(dns));
+        chmod(output, 0o300)
 
 def runDDClient(output):
-    system("{} {}".format(EXECUTABLE, output))
+    print("{} -file {}".format(EXECUTABLE, output))
+    system("{} -daemon 120 -file {}".format(EXECUTABLE, output))
 
 if __name__ == '__main__':
     args = parseArguments(sys.argv[1:])
