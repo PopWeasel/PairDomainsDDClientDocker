@@ -1,5 +1,6 @@
 import argparse
-from os import path, system, chmod
+from os import path, chmod
+from subprocess import call, CalledProcessError
 import sys
 
 EXECUTABLE = "ddclient"
@@ -50,8 +51,11 @@ def writeFile(use, server, login, password, dns, output):
         chmod(output, 0o300)
 
 def runDDClient(output):
-    print("{} -file {}".format(EXECUTABLE, output))
-    system("{} -daemon 120 -file {}".format(EXECUTABLE, output))
+    try:
+        call(["{}".format(EXECUTABLE), "-daemon", "120", "-file", "{}".format(output)], shell=False)
+    except CalledProcessError as e:
+        print("{} ".format(e.cmd()))
+
 
 if __name__ == '__main__':
     args = parseArguments(sys.argv[1:])
