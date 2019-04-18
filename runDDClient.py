@@ -1,5 +1,6 @@
 import argparse
 from os import path, chmod
+import time
 from subprocess import call, CalledProcessError
 import sys
 
@@ -31,14 +32,17 @@ def parseArguments(sysArgs):
                         metavar="location of ddclient config",
                         default="ddclient.conf",
                         help="path location for ddclient config")
+    parser.add_argument("-t", "--time",
+                        metavar="Delay between ddclient",
+                        default=60,
+                        help="Delay between updates to ddclient")
     args = parser.parse_args(sysArgs)
     return args
 
-def writeFile(use, server, login, password, dns, output):
+def writeFile(use, server, login, password, dns, output, time):
     print("Writing: {}".format(output))
     with open(output, "w") as file:
         file.write("# Config file for ddclient\n");
-        file.write("daemon=60 # check every 300 seconds\n");
         file.write("syslog=yes # log update msgs to syslog\n");
         file.write("pid=/var/run/ddclient.pid\n");
         file.write("ssl=yes\n");
@@ -51,13 +55,17 @@ def writeFile(use, server, login, password, dns, output):
         chmod(output, 0o300)
 
 def runDDClient(output):
+    print("Running ddclient")
     try:
-        call(["{}".format(EXECUTABLE), "-daemon", "120", "-file", "{}".format(output)], shell=False)
+        return call([EXECUTABLE, "-file", output], shell=True)
     except CalledProcessError as e:
-        print("{} ".format(e.cmd()))
+        return -1;
 
 
 if __name__ == '__main__':
     args = parseArguments(sys.argv[1:])
     writeFile(**vars(args))
-    runDDClient(args.output)
+    ddCode = 0;
+    while ddCode == 0:
+        runDDClient(args.output)
+        time.sleep(args.time)
