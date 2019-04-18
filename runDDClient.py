@@ -57,7 +57,8 @@ def writeFile(use, server, login, password, dns, output, time):
 def runDDClient(output):
     print("Running ddclient")
     try:
-        return call([EXECUTABLE, "-file", output], shell=True)
+        #return call([EXECUTABLE, "'-file'", 'output'], shell=True)
+        return call([EXECUTABLE, "-file", output], shell=False)
     except CalledProcessError as e:
         return -1;
 
@@ -67,5 +68,5 @@ if __name__ == '__main__':
     writeFile(**vars(args))
     ddCode = 0;
     while ddCode == 0:
-        runDDClient(args.output)
+        ddcode = runDDClient(path.abspath(args.output))
         time.sleep(args.time)
