@@ -55,7 +55,6 @@ def writeFile(use, server, login, password, dns, output, time):
         chmod(output, 0o300)
 
 def runDDClient(output):
-    print("Running ddclient")
     try:
         #return call([EXECUTABLE, "'-file'", 'output'], shell=True)
         return call([EXECUTABLE, "-file", output], shell=False)
