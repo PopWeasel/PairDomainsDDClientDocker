@@ -34,7 +34,7 @@ def parseArguments(sysArgs):
                         help="path location for ddclient config")
     parser.add_argument("-t", "--time",
                         metavar="Delay between ddclient",
-                        default=60,
+                        default=300,
                         help="Delay between updates to ddclient")
     args = parser.parse_args(sysArgs)
     return args
@@ -55,11 +55,11 @@ def writeFile(use, server, login, password, dns, output, time):
         chmod(output, 0o300)
 
 def runDDClient(output):
-    print("Running ddclient")
     try:
         #return call([EXECUTABLE, "'-file'", 'output'], shell=True)
         return call([EXECUTABLE, "-file", output], shell=False)
     except CalledProcessError as e:
+        print(e)
         return -1;
 
 
@@ -67,6 +67,9 @@ if __name__ == '__main__':
     args = parseArguments(sys.argv[1:])
     writeFile(**vars(args))
     ddCode = 0;
+    print("Entering run loop")
     while ddCode == 0:
         ddcode = runDDClient(path.abspath(args.output))
         time.sleep(args.time)
+    print("Exiting run loop")
+
