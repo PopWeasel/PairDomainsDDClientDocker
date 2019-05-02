@@ -34,7 +34,8 @@ def parseArguments(sysArgs):
                         help="path location for ddclient config")
     parser.add_argument("-t", "--time",
                         metavar="Delay between ddclient",
-                        default=300,
+                        default=600,
+                        type=int,
                         help="Delay between updates to ddclient")
     args = parser.parse_args(sysArgs)
     return args
